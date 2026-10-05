@@ -1,0 +1,175 @@
+<div class="login-wrapper">
+  <!-- Cabecera / Marca -->
+  <header class="login-header">
+    <div class="brand-badge">
+      <svg class="badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="m9 12 2 2 4-4"/>
+      </svg>
+      <span>Acceso Seguro 256-bit</span>
+    </div>
+
+    <!-- Icono de Seguridad Monograma -->
+    <div class="brand-avatar">
+      <svg viewBox="0 0 100 100" fill="none">
+        <defs>
+          <linearGradient id="grad-logo" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#4f46e5" />
+            <stop offset="100%" stop-color="#7c3aed" />
+          </linearGradient>
+        </defs>
+        <rect width="100" height="100" rx="28" fill="url(#grad-logo)" />
+        <path d="M50 24C41.16 24 34 31.16 34 40V46C30.68 46 28 48.68 28 52V70C28 73.31 30.68 76 34 76H66C69.31 76 72 73.31 72 70V52C72 48.68 69.31 46 66 46V40C66 31.16 58.83 24 50 24ZM42 40C42 35.58 45.58 32 50 32C54.41 32 58 35.58 58 40V46H42V40ZM50 63C47.79 63 46 61.2 46 59C46 56.79 47.79 55 50 55C52.2 55 54 56.79 54 59C54 61.2 52.2 63 50 63Z" fill="#ffffff" fill-opacity="0.9" />
+      </svg>
+    </div>
+
+    <h1 class="title">¡Bienvenido de nuevo!</h1>
+    <p class="subtitle">Ingresa tus credenciales para acceder a tu cuenta protegida</p>
+  </header>
+
+  <!-- Tarjeta Formulario -->
+  <main class="login-card">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="form-container">
+      
+      <!-- Campo Usuario / Correo -->
+      <div class="field-group" [class.has-error]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+        <div class="label-row">
+          <label for="username">Usuario o correo</label>
+          <span class="required-tag">Requerido</span>
+        </div>
+        <div class="input-container">
+          <span class="prefix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4"/>
+              <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>
+            </svg>
+          </span>
+          <input 
+            id="username"
+            type="email" 
+            formControlName="username" 
+            placeholder="ej. usuario@dominio.com"
+            autocomplete="email"
+          />
+        </div>
+        <div class="error-msg" *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          Por favor ingresa un correo o usuario válido
+        </div>
+      </div>
+
+      <!-- Campo Contraseña -->
+      <div class="field-group" [class.has-error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+        <div class="label-row">
+          <label for="password">Contraseña</label>
+          <a href="#" class="link-forgot" (click)="$event.preventDefault()">¿Olvidaste tu contraseña?</a>
+        </div>
+        <div class="input-container">
+          <span class="prefix-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="18" height="11" x="3" y="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+          </span>
+          <input 
+            id="password"
+            [type]="showPassword() ? 'text' : 'password'" 
+            formControlName="password" 
+            placeholder="••••••••"
+            autocomplete="current-password"
+          />
+          <button 
+            type="button" 
+            class="toggle-eye" 
+            (click)="togglePasswordVisibility()" 
+            [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Ver contraseña'"
+          >
+            <!-- Icono Ojo -->
+            <svg *ngIf="!showPassword()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <!-- Icono Ojo Tachado -->
+            <svg *ngIf="showPassword()" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/>
+              <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/>
+              <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/>
+              <line x1="2" x2="22" y1="2" y2="22"/>
+            </svg>
+          </button>
+        </div>
+        <div class="error-msg" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          La contraseña debe tener al menos 6 caracteres
+        </div>
+      </div>
+
+      <!-- Recordar dispositivo -->
+      <label class="checkbox-control">
+        <input type="checkbox" formControlName="rememberMe" />
+        <span class="custom-checkbox"></span>
+        <span class="checkbox-text">Recordar este dispositivo</span>
+      </label>
+
+      <!-- Botón Submit -->
+      <button type="submit" class="btn-primary" [disabled]="isLoading()">
+        <span *ngIf="!isLoading()">Iniciar sesión</span>
+        <span *ngIf="isLoading()">Ingresando...</span>
+        <svg *ngIf="!isLoading()" class="arrow-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 12h14m-7-7 7 7-7 7"/>
+        </svg>
+      </button>
+
+      <!-- Divisor Social -->
+      <div class="divider">
+        <span>O CONTINÚA CON</span>
+      </div>
+
+      <!-- Botones Sociales -->
+      <div class="social-row">
+        <button type="button" class="btn-social" (click)="loginWithProvider('google')" aria-label="Ingresar con Google">
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+            <path fill="#FBBC05" d="M5.84 14.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.62z"/>
+            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+          </svg>
+        </button>
+
+        <button type="button" class="btn-social" (click)="loginWithProvider('apple')" aria-label="Ingresar con Apple">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.89c.65-.8 1.1-1.92.98-3.04-.95.04-2.11.64-2.79 1.44-.59.69-1.12 1.83-.98 2.92 1.07.08 2.15-.53 2.79-1.32z"/>
+          </svg>
+        </button>
+
+        <button type="button" class="btn-social" (click)="loginWithProvider('biometric')" aria-label="Ingresar con Biometría / Huella">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10"/>
+            <path d="M5 12a7 7 0 0 1 14 0"/>
+            <path d="M8 12a4 4 0 0 1 8 0"/>
+            <path d="M12 12v3"/>
+            <path d="M12 19v1"/>
+          </svg>
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- Footer y Registro -->
+  <footer class="login-footer">
+    <p class="register-prompt">
+      ¿No tienes una cuenta? <a href="#" (click)="$event.preventDefault()">Regístrate aquí</a>
+    </p>
+
+    <div class="footer-links">
+      <a href="#" (click)="$event.preventDefault()">Términos de Servicio</a>
+      <span class="dot">•</span>
+      <a href="#" (click)="$event.preventDefault()">Política de Privacidad</a>
+      <span class="dot">•</span>
+      <a href="#" (click)="$event.preventDefault()">Soporte</a>
+    </div>
+  </footer>
+</div>
+
+
+
+
