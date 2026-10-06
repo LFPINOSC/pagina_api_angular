@@ -1,37 +1,68 @@
 <div class="dashboard">
+
   <header class="header">
+
     <div>
+
       <h1>Panel de Usuario</h1>
+
       <p>
         Bienvenido,
         <strong>{{ username }}</strong>
       </p>
+
     </div>
+
     <button
       type="button"
       (click)="cerrarSesion()">
+
       Cerrar sesión
+
     </button>
+
   </header>
+
+
   <main class="contenido">
+
     <h2>Mis opciones</h2>
+
+
     <div class="cards">
+
+      <!-- PERFIL -->
+
       <div
         class="card"
         (click)="irPerfil()">
-        <h3>Mi perfil</h3>
+
+        <h3>👤 Mi perfil</h3>
+
         <p>
-          Consultar mis datos
+          Consultar mis datos personales
+          y configuración de cuenta.
         </p>
+
       </div>
+
+
+      <!-- CLIENTES -->
+
       <div
         class="card"
         (click)="irClientes()">
-        <h3>Clientes</h3>
+
+        <h3>👥 Clientes</h3>
+
         <p>
-          Consultar clientes
+          Consultar y registrar clientes.
         </p>
+
       </div>
+
     </div>
+
   </main>
+
 </div>

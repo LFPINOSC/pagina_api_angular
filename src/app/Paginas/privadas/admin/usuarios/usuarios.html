@@ -1,0 +1,914 @@
+<div class="usuarios-container">
+
+  <!-- =====================================================
+       ENCABEZADO
+  ====================================================== -->
+
+  <div class="encabezado">
+
+    <div>
+
+      <h1>
+        Administración de Usuarios
+      </h1>
+
+      <p>
+        Gestión de usuarios, roles y estados
+        de las cuentas del sistema.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="btn-nuevo"
+      (click)="nuevoUsuario()">
+
+      ➕ Nuevo usuario
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       MENSAJES
+  ====================================================== -->
+
+  @if (mensaje) {
+
+    <div class="mensaje-exito">
+      ✓ {{ mensaje }}
+    </div>
+
+  }
+
+
+  @if (error) {
+
+    <div class="mensaje-error">
+      ⚠ {{ error }}
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       BUSCADOR
+  ====================================================== -->
+
+  <div class="buscador">
+
+    <div class="campo-busqueda">
+
+      <label for="busquedaId">
+        Buscar usuario por ID
+      </label>
+
+      <input
+        id="busquedaId"
+        type="number"
+        [(ngModel)]="busquedaId"
+        placeholder="Ingrese el ID"
+        min="1"
+      />
+
+    </div>
+
+
+    <button
+      type="button"
+      class="btn buscar"
+      (click)="buscarPorId()"
+      [disabled]="cargando">
+
+      🔍 Buscar
+
+    </button>
+
+
+    <button
+      type="button"
+      class="btn limpiar"
+      (click)="limpiarBusqueda()"
+      [disabled]="cargando">
+
+      ↻ Mostrar todos
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       CARGANDO
+  ====================================================== -->
+
+  @if (cargando) {
+
+    <div class="cargando">
+
+      <div class="spinner"></div>
+
+      <p>
+        Cargando usuarios...
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       CONTENIDO
+  ====================================================== -->
+
+  @if (!cargando) {
+
+    <!-- =================================================
+         TABLA
+    ================================================== -->
+
+    @if (usuarios.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>ID</th>
+
+              <th>Usuario</th>
+
+              <th>Rol</th>
+
+              <th>Estado</th>
+
+              <th>Cliente</th>
+
+              <th>Acciones</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              usuario of usuarios;
+              track usuario.id
+            ) {
+
+              <tr>
+
+                <!-- ID -->
+
+                <td>
+
+                  <strong>
+                    #{{ usuario.id }}
+                  </strong>
+
+                </td>
+
+
+                <!-- USUARIO -->
+
+                <td>
+
+                  <div class="usuario-info">
+
+                    <div class="avatar">
+
+                      {{
+                        usuario.username
+                          .charAt(0)
+                          .toUpperCase()
+                      }}
+
+                    </div>
+
+                    <span>
+                      {{ usuario.username }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <!-- ROL -->
+
+                <td>
+
+                  <span
+                    class="badge"
+                    [class.admin]="usuario.rol === 'ADMIN'"
+                    [class.usuario]="usuario.rol === 'USUARIO'">
+
+                    {{ usuario.rol }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- ESTADO -->
+
+                <td>
+
+                  <span
+                    class="estado"
+                    [class.activo]="usuario.activo"
+                    [class.inactivo]="!usuario.activo">
+
+                    ●
+
+                    {{ textoEstado(usuario.activo) }}
+
+                  </span>
+
+                </td>
+
+
+                <!-- CLIENTE -->
+
+                <td>
+
+                  @if (usuario.cliente) {
+
+                    <span class="cliente-asignado">
+
+                      👤
+
+                      {{ usuario.cliente.nombre }}
+
+                    </span>
+
+                  }
+                  @else {
+
+                    <span class="sin-cliente">
+
+                      Sin cliente
+
+                    </span>
+
+                  }
+
+                </td>
+
+
+                <!-- ACCIONES -->
+
+                <td>
+
+                  <div class="acciones">
+
+
+                    <!-- DETALLE -->
+
+                    <button
+                      type="button"
+                      class="accion detalle"
+                      title="Ver detalle"
+                      (click)="seleccionarUsuario(usuario)">
+
+                      👁
+
+                    </button>
+
+
+                    <!-- ESTADO -->
+
+                    <button
+                      type="button"
+                      class="accion estado-btn"
+                      [title]="usuario.activo
+                        ? 'Desactivar usuario'
+                        : 'Activar usuario'"
+                      (click)="cambiarEstado(usuario)">
+
+                      @if (usuario.activo) {
+
+                        🔒
+
+                      }
+                      @else {
+
+                        🔓
+
+                      }
+
+                    </button>
+
+
+                    <!-- ROL -->
+
+                    <button
+                      type="button"
+                      class="accion rol-btn"
+                      title="Cambiar rol"
+                      (click)="cambiarRol(usuario)">
+
+                      🔄
+
+                    </button>
+
+
+                    <!-- ELIMINAR -->
+
+                    <button
+                      type="button"
+                      class="accion eliminar"
+                      title="Eliminar usuario"
+                      (click)="eliminarUsuario(usuario)">
+
+                      🗑
+
+                    </button>
+
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+
+    <!-- =================================================
+         SIN RESULTADOS
+    ================================================== -->
+
+    @else {
+
+      <div class="sin-resultados">
+
+        <div class="icono">
+          👥
+        </div>
+
+        <h3>
+          No existen usuarios
+        </h3>
+
+        <p>
+          No se encontraron usuarios
+          para mostrar.
+        </p>
+
+      </div>
+
+    }
+
+  }
+
+
+  <!-- =====================================================
+       MODAL NUEVO USUARIO
+  ====================================================== -->
+
+  @if (mostrarFormulario) {
+
+    <div
+      class="modal-fondo"
+      (click)="cerrarFormulario()">
+
+
+      <div
+        class="modal modal-formulario"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <div>
+
+            <h2>
+              Nuevo usuario
+            </h2>
+
+            <p>
+              Registrar una nueva cuenta
+              en el sistema.
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="cerrar"
+            (click)="cerrarFormulario()">
+
+            ×
+
+          </button>
+
+        </div>
+
+
+        <!-- FORMULARIO -->
+
+        <div class="formulario">
+
+
+          <!-- =========================================
+               USERNAME
+          ========================================== -->
+
+          <div class="form-group">
+
+            <label for="username">
+
+              Nombre de usuario
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              id="username"
+              type="text"
+              [(ngModel)]="nuevoUsuarioData.username"
+              placeholder="Ingrese el nombre de usuario"
+              autocomplete="off"
+            />
+
+          </div>
+
+
+          <!-- =========================================
+               PASSWORD
+          ========================================== -->
+
+          <div class="form-group">
+
+            <label for="password">
+
+              Contraseña
+
+              <span>*</span>
+
+            </label>
+
+
+            <div class="password-container">
+
+              <input
+                id="password"
+                [type]="mostrarPassword
+                  ? 'text'
+                  : 'password'"
+                [(ngModel)]="nuevoUsuarioData.password"
+                placeholder="Ingrese la contraseña"
+                autocomplete="new-password"
+              />
+
+
+              <button
+                type="button"
+                class="btn-password"
+                (click)="cambiarVisibilidadPassword()">
+
+                @if (mostrarPassword) {
+
+                  🙈
+
+                }
+                @else {
+
+                  👁
+
+                }
+
+              </button>
+
+            </div>
+
+
+            <small>
+              Mínimo 6 caracteres.
+            </small>
+
+          </div>
+
+
+          <!-- =========================================
+               ROL
+          ========================================== -->
+
+          <div class="form-group">
+
+            <label for="rol">
+
+              Rol
+
+              <span>*</span>
+
+            </label>
+
+
+            <select
+              id="rol"
+              [(ngModel)]="nuevoUsuarioData.rol"
+              (ngModelChange)="cambioRol()">
+
+              <option value="USUARIO">
+                USUARIO
+              </option>
+
+              <option value="ADMIN">
+                ADMIN
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <!-- =========================================
+               CLIENTE
+          ========================================== -->
+
+          <div class="form-group">
+
+            <label for="cliente">
+
+              Cliente
+
+              @if (nuevoUsuarioData.rol === 'USUARIO') {
+                <span>*</span>
+              }
+
+            </label>
+
+
+            @if (cargandoClientes) {
+
+              <p class="cargando-clientes">
+                Cargando clientes...
+              </p>
+
+            }
+            @else {
+
+              <select
+                id="cliente"
+                [(ngModel)]="nuevoUsuarioData.clienteId">
+
+                <option [ngValue]="null">
+
+                  Seleccione un cliente
+
+                </option>
+
+
+                @for (
+                  cliente of clientes;
+                  track cliente.id
+                ) {
+
+                  <option
+                    [ngValue]="cliente.id">
+
+                    {{ cliente.nombre }}
+
+                  </option>
+
+                }
+
+              </select>
+
+            }
+
+
+            @if (
+              nuevoUsuarioData.rol === 'USUARIO'
+            ) {
+
+              <small>
+                El usuario debe estar asociado a un cliente.
+              </small>
+
+            }
+            @else {
+
+              <small>
+                El administrador puede no tener cliente.
+              </small>
+
+            }
+
+          </div>
+
+
+          <!-- =========================================
+               ESTADO
+          ========================================== -->
+
+          <div class="form-group">
+
+            <label>
+              Estado
+            </label>
+
+
+            <label class="switch-container">
+
+              <input
+                type="checkbox"
+                [(ngModel)]="nuevoUsuarioData.activo"
+              />
+
+              <span class="switch"></span>
+
+              <span class="switch-text">
+
+                {{
+                  nuevoUsuarioData.activo
+                    ? 'Usuario activo'
+                    : 'Usuario inactivo'
+                }}
+
+              </span>
+
+            </label>
+
+          </div>
+
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+
+          <button
+            type="button"
+            class="btn-cancelar"
+            [disabled]="guardando"
+            (click)="cerrarFormulario()">
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-guardar"
+            [disabled]="guardando"
+            (click)="crearUsuario()">
+
+            @if (guardando) {
+
+              <span class="spinner-pequeno"></span>
+
+              Guardando...
+
+            }
+            @else {
+
+              💾 Guardar usuario
+
+            }
+
+          </button>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       MODAL DETALLE
+  ====================================================== -->
+
+  @if (usuarioSeleccionado) {
+
+    <div
+      class="modal-fondo"
+      (click)="cerrarDetalle()">
+
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()">
+
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+          <h2>
+            Información del usuario
+          </h2>
+
+
+          <button
+            type="button"
+            class="cerrar"
+            (click)="cerrarDetalle()">
+
+            ×
+
+          </button>
+
+        </div>
+
+
+        <!-- BODY -->
+
+        <div class="modal-body">
+
+
+          <div class="detalle-avatar">
+
+            {{
+              usuarioSeleccionado.username
+                .charAt(0)
+                .toUpperCase()
+            }}
+
+          </div>
+
+
+          <h3>
+
+            {{ usuarioSeleccionado.username }}
+
+          </h3>
+
+
+          <div class="detalle-item">
+
+            <span>
+              ID
+            </span>
+
+            <strong>
+              {{ usuarioSeleccionado.id }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Usuario
+            </span>
+
+            <strong>
+              {{ usuarioSeleccionado.username }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Rol
+            </span>
+
+            <strong>
+              {{ usuarioSeleccionado.rol }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Estado
+            </span>
+
+            <strong
+              [class.estado-activo]="usuarioSeleccionado.activo"
+              [class.estado-inactivo]="!usuarioSeleccionado.activo">
+
+              {{ textoEstado(
+                usuarioSeleccionado.activo
+              ) }}
+
+            </strong>
+
+          </div>
+
+
+          <!-- CLIENTE -->
+
+          @if (usuarioSeleccionado.cliente) {
+
+            <div class="detalle-item">
+
+              <span>
+                Cliente
+              </span>
+
+              <strong>
+
+                {{
+                  usuarioSeleccionado.cliente.nombre
+                }}
+
+              </strong>
+
+            </div>
+
+          }
+          @else {
+
+            <div class="detalle-item">
+
+              <span>
+                Cliente
+              </span>
+
+              <strong class="sin-cliente">
+                Sin cliente
+              </strong>
+
+            </div>
+
+          }
+
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+
+          <!--
+
+            Solamente ADMIN puede quedarse
+            sin cliente.
+
+          -->
+
+          @if (
+            usuarioSeleccionado.cliente &&
+            usuarioSeleccionado.rol === 'ADMIN'
+          ) {
+
+            <button
+              type="button"
+              class="btn-desvincular"
+              (click)="desvincularCliente(usuarioSeleccionado)">
+
+              🔗 Desvincular cliente
+
+            </button>
+
+          }
+
+
+          <button
+            type="button"
+            class="btn-cerrar"
+            (click)="cerrarDetalle()">
+
+            Cerrar
+
+          </button>
+
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>

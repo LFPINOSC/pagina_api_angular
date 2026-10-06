@@ -1,0 +1,227 @@
+
+.dashboard {
+  min-height: 100vh;
+  background: #f4f6f9;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #2c3e50;
+}
+
+/* ================================
+   ENCABEZADO
+================================ */
+.header {
+  background: linear-gradient(135deg, #1e3a8a, #2563eb);
+  color: white;
+  padding: 25px 40px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header h1 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.header p {
+  margin: 0;
+  font-size: 16px;
+  opacity: 0.95;
+}
+
+.header strong {
+  font-weight: 700;
+}
+
+/* ================================
+   BOTÓN CERRAR SESIÓN
+================================ */
+.header button {
+  background: white;
+  color: #1e3a8a;
+
+  border: none;
+  border-radius: 8px;
+
+  padding: 11px 20px;
+
+  font-size: 14px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.header button:hover {
+  background: #e5e7eb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.header button:active {
+  transform: translateY(0);
+}
+
+/* ================================
+   CONTENIDO
+================================ */
+.contenido {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 45px 30px;
+}
+
+.contenido h2 {
+  margin: 0 0 30px 0;
+
+  font-size: 24px;
+  font-weight: 600;
+
+  color: #1f2937;
+}
+
+/* ================================
+   TARJETAS
+================================ */
+.cards {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 25px;
+}
+
+/* ================================
+   CARD
+================================ */
+.card {
+  background: white;
+
+  border-radius: 14px;
+
+  padding: 30px;
+
+  min-height: 170px;
+
+  box-sizing: border-box;
+
+  cursor: pointer;
+
+  border: 1px solid #e5e7eb;
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-7px);
+
+  border-color: #2563eb;
+
+  box-shadow: 0 12px 25px rgba(37, 99, 235, 0.18);
+}
+
+/* ================================
+   TÍTULO DE CARD
+================================ */
+.card h3 {
+  margin: 0 0 15px 0;
+
+  font-size: 20px;
+
+  color: #1e3a8a;
+
+  font-weight: 700;
+}
+
+/* ================================
+   TEXTO DE CARD
+================================ */
+.card p {
+  margin: 0;
+
+  color: #6b7280;
+
+  font-size: 15px;
+
+  line-height: 1.6;
+}
+
+/* ================================
+   EFECTO AL HACER CLICK
+================================ */
+.card:active {
+  transform: scale(0.98);
+}
+
+/* ================================
+   RESPONSIVE - TABLET
+================================ */
+@media (max-width: 900px) {
+
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .header {
+    padding: 20px 25px;
+  }
+
+  .contenido {
+    padding: 35px 25px;
+  }
+}
+
+/* ================================
+   RESPONSIVE - CELULAR
+================================ */
+@media (max-width: 600px) {
+
+  .header {
+    flex-direction: column;
+
+    align-items: flex-start;
+
+    gap: 20px;
+
+    padding: 25px 20px;
+  }
+
+  .header h1 {
+    font-size: 23px;
+  }
+
+  .header p {
+    font-size: 14px;
+  }
+
+  .header button {
+    width: 100%;
+  }
+
+  .contenido {
+    padding: 30px 20px;
+  }
+
+  .contenido h2 {
+    font-size: 21px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .card {
+    padding: 25px;
+  }
+}

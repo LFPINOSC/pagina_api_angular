@@ -1,8 +1,8 @@
-export interface Cliente{
-    id:number;
-    cedula:String;
-    nombre:String;
-    apellido:String;
-    telefono:String;
-    correo:String;
-} 
+export interface Cliente {
+  id?: number;
+  cedula: string;
+  nombre: string;
+  direccion: string;
+  telefono?: string;
+  correo?: string;
+}

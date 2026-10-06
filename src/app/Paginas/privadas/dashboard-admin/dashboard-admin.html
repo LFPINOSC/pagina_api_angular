@@ -1,1 +1,48 @@
-<h1>Panel de Administración</h1>
+
+<div class="dashboard">
+  <header class="header">
+    <div>
+      <h1>Panel de Administración</h1>
+      <p>
+        Bienvenido,
+        <strong>{{ username }}</strong>
+      </p>
+    </div>
+    <button
+      type="button"
+      (click)="cerrarSesion()">
+      Cerrar sesión
+    </button>
+  </header>
+  <main class="contenido">
+    <h2>Administración del sistema</h2>
+    <div class="cards">
+     <div
+        class="card"
+        (click)="irUsuarios()">
+        <h3>👥 Usuarios</h3>
+        <p>
+          Administrar usuarios del sistema,
+          roles y estados de las cuentas.
+        </p>
+      </div>
+      <div
+        class="card"
+        (click)="irClientes()">
+        <h3>👤 Clientes</h3>
+        <p>
+          Registrar, consultar, actualizar
+          y eliminar clientes.
+        </p>
+      </div>
+    <div
+        class="card"
+        (click)="irReportes()">
+        <h3>📊 Reportes</h3>
+        <p>
+          Consultar reportes del sistema.
+        </p>
+      </div>
+    </div>
+  </main>
+</div>

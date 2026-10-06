@@ -1,10 +1,16 @@
-import { Cliente } from "./Cliente";
+import { Cliente } from './Cliente';
 
-export interface Usuario{
-    id:number;
-    username:String;
-    password:String;
-    estado:boolean;
-    rol:String;
-    cliente:Cliente;
+export interface Usuario {
+
+  id?: number;
+
+  username: string;
+
+  password?: string;
+
+  activo: boolean;
+
+  rol: 'ADMIN' | 'USUARIO';
+
+  cliente: Cliente | null;
 }

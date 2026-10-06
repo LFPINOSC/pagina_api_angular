@@ -1,0 +1,313 @@
+<div class="perfil-container">
+
+  <!-- ENCABEZADO -->
+
+  <div class="encabezado">
+
+    <div>
+
+      <h1>Mi Perfil</h1>
+
+      <p>
+        Consulta y modifica tu información personal.
+      </p>
+
+    </div>
+
+  </div>
+
+
+  <!-- CARGANDO -->
+
+  @if (cargando) {
+
+    <div class="cargando">
+
+      <div class="spinner"></div>
+
+      <p>
+        Cargando perfil...
+      </p>
+
+    </div>
+
+  }
+
+
+  @if (!cargando && usuario) {
+
+    <!-- MENSAJES -->
+
+    @if (mensaje) {
+
+      <div class="mensaje-exito">
+        ✓ {{ mensaje }}
+      </div>
+
+    }
+
+
+    @if (error) {
+
+      <div class="mensaje-error">
+        ⚠ {{ error }}
+      </div>
+
+    }
+
+
+    <div class="perfil-grid">
+
+
+      <!-- =========================================
+           INFORMACIÓN DE CUENTA
+      ========================================== -->
+
+      <section class="tarjeta">
+
+        <div class="tarjeta-header">
+
+          <h2>
+            Cuenta
+          </h2>
+
+          <span class="icono">
+            🔐
+          </span>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Nombre de usuario
+          </label>
+
+          <input
+            type="text"
+            [(ngModel)]="usuario.username"
+            placeholder="Nombre de usuario"
+          />
+
+        </div>
+
+
+        <div class="fila">
+
+          <div>
+
+            <label>
+              Rol
+            </label>
+
+            <div class="valor-bloqueado">
+
+              {{ usuario.rol }}
+
+            </div>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              Estado
+            </label>
+
+            <div
+              class="estado"
+              [class.activo]="usuario.activo"
+              [class.inactivo]="!usuario.activo">
+
+              {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+
+      <!-- =========================================
+           DATOS DEL CLIENTE
+      ========================================== -->
+
+      @if (usuario.cliente) {
+
+        <section class="tarjeta">
+
+          <div class="tarjeta-header">
+
+            <h2>
+              Datos personales
+            </h2>
+
+            <span class="icono">
+              👤
+            </span>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Cédula
+            </label>
+
+            <input
+              type="text"
+              [value]="usuario.cliente.cedula"
+              disabled
+            />
+
+            <small>
+              La cédula no puede ser modificada.
+            </small>
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Nombre
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="usuario.cliente.nombre"
+              placeholder="Nombre completo"
+            />
+
+          </div>
+
+
+          <div class="form-group">
+
+            <label>
+              Dirección
+            </label>
+
+            <input
+              type="text"
+              [(ngModel)]="usuario.cliente.direccion"
+              placeholder="Dirección"
+            />
+
+          </div>
+
+
+          <div class="fila">
+
+            <div class="form-group">
+
+              <label>
+                Teléfono
+              </label>
+
+              <input
+                type="text"
+                [(ngModel)]="usuario.cliente.telefono"
+                placeholder="Teléfono"
+              />
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label>
+                Correo
+              </label>
+
+              <input
+                type="email"
+                [(ngModel)]="usuario.cliente.correo"
+                placeholder="Correo"
+              />
+
+            </div>
+
+          </div>
+
+        </section>
+
+      }
+
+
+      <!-- =========================================
+           SEGURIDAD
+      ========================================== -->
+
+      <section class="tarjeta">
+
+        <div class="tarjeta-header">
+
+          <h2>
+            Seguridad
+          </h2>
+
+          <span class="icono">
+            🔑
+          </span>
+
+        </div>
+
+
+        <div class="form-group">
+
+          <label>
+            Nueva contraseña
+          </label>
+
+          <input
+            type="password"
+            [(ngModel)]="nuevaPassword"
+            placeholder="Dejar vacío para conservar la actual"
+          />
+
+          <small>
+            Si no desea cambiar su contraseña,
+            deje este campo vacío.
+          </small>
+
+        </div>
+
+      </section>
+
+
+    </div>
+
+
+    <!-- GUARDAR -->
+
+    <div class="acciones">
+
+      <button
+        type="button"
+        class="btn-guardar"
+        [disabled]="guardando"
+        (click)="guardarPerfil()">
+
+        @if (guardando) {
+
+          Guardando...
+
+        } @else {
+
+          💾 Guardar cambios
+
+        }
+
+      </button>
+
+    </div>
+
+  }
+
+</div>

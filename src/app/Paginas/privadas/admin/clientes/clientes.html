@@ -1,0 +1,683 @@
+<div class="clientes-container">
+
+  <!-- =====================================================
+       ENCABEZADO
+  ====================================================== -->
+
+  <div class="encabezado">
+
+    <div>
+
+      <h1>
+        Administración de Clientes
+      </h1>
+
+      <p>
+        Registrar, consultar, actualizar y eliminar clientes.
+      </p>
+
+    </div>
+
+
+    <button
+      type="button"
+      class="btn-nuevo"
+      (click)="nuevoCliente()">
+
+      ➕ Nuevo cliente
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       MENSAJES
+  ====================================================== -->
+
+  @if (mensaje) {
+
+    <div class="mensaje-exito">
+
+      ✓ {{ mensaje }}
+
+    </div>
+
+  }
+
+
+  @if (error) {
+
+    <div class="mensaje-error">
+
+      ⚠ {{ error }}
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       BÚSQUEDA
+  ====================================================== -->
+
+  <div class="buscador">
+
+    <div class="campo-busqueda">
+
+      <label for="tipoBusqueda">
+        Buscar cliente por
+      </label>
+
+      <select
+        id="tipoBusqueda"
+        [(ngModel)]="tipoBusqueda">
+
+        <option value="id">
+          ID
+        </option>
+
+        <option value="cedula">
+          Cédula
+        </option>
+
+        <option value="direccion">
+          Dirección
+        </option>
+
+      </select>
+
+    </div>
+
+
+    <div class="campo-busqueda">
+
+      <label for="textoBusqueda">
+        Criterio
+      </label>
+
+      <input
+        id="textoBusqueda"
+        type="text"
+        [(ngModel)]="textoBusqueda"
+        placeholder="Ingrese el criterio"
+        (keyup.enter)="buscar()"
+      />
+
+    </div>
+
+
+    <button
+      type="button"
+      class="btn buscar"
+      (click)="buscar()"
+      [disabled]="cargando">
+
+      🔍 Buscar
+
+    </button>
+
+
+    <button
+      type="button"
+      class="btn limpiar"
+      (click)="mostrarTodos()"
+      [disabled]="cargando">
+
+      ↻ Mostrar todos
+
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       CARGANDO
+  ====================================================== -->
+
+  @if (cargando) {
+
+    <div class="cargando">
+
+      <div class="spinner"></div>
+
+      <p>
+        Cargando clientes...
+      </p>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       TABLA
+  ====================================================== -->
+
+  @if (!cargando) {
+
+    @if (clientes.length > 0) {
+
+      <div class="tabla-container">
+
+        <table>
+
+          <thead>
+
+            <tr>
+
+              <th>ID</th>
+
+              <th>Cédula</th>
+
+              <th>Nombre</th>
+
+              <th>Dirección</th>
+
+              <th>Teléfono</th>
+
+              <th>Correo</th>
+
+              <th>Acciones</th>
+
+            </tr>
+
+          </thead>
+
+
+          <tbody>
+
+            @for (
+              cliente of clientes;
+              track cliente.id
+            ) {
+
+              <tr>
+
+                <td>
+
+                  <strong>
+                    #{{ cliente.id }}
+                  </strong>
+
+                </td>
+
+
+                <td>
+                  {{ cliente.cedula }}
+                </td>
+
+
+                <td>
+
+                  <div class="cliente-info">
+
+                    <div class="avatar">
+
+                      {{
+                        cliente.nombre
+                          .charAt(0)
+                          .toUpperCase()
+                      }}
+
+                    </div>
+
+                    <span>
+                      {{ cliente.nombre }}
+                    </span>
+
+                  </div>
+
+                </td>
+
+
+                <td>
+                  {{ cliente.direccion }}
+                </td>
+
+
+                <td>
+                  {{ cliente.telefono || '—' }}
+                </td>
+
+
+                <td>
+                  {{ cliente.correo || '—' }}
+                </td>
+
+
+                <td>
+
+                  <div class="acciones">
+
+                    <button
+                      type="button"
+                      class="accion detalle"
+                      title="Ver detalle"
+                      (click)="verDetalle(cliente)">
+
+                      👁
+
+                    </button>
+
+
+                    <button
+                      type="button"
+                      class="accion editar"
+                      title="Editar cliente"
+                      (click)="editarCliente(cliente)">
+
+                      ✏️
+
+                    </button>
+
+
+                    <button
+                      type="button"
+                      class="accion eliminar"
+                      title="Eliminar cliente"
+                      (click)="eliminarCliente(cliente)">
+
+                      🗑
+
+                    </button>
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    }
+
+
+    @else {
+
+      <div class="sin-resultados">
+
+        <div class="icono">
+          👥
+        </div>
+
+        <h3>
+          No existen clientes
+        </h3>
+
+        <p>
+          No se encontraron clientes para mostrar.
+        </p>
+
+      </div>
+
+    }
+
+  }
+
+
+  <!-- =====================================================
+       MODAL CREAR / EDITAR
+  ====================================================== -->
+
+  @if (mostrarFormulario) {
+
+    <div
+      class="modal-fondo"
+      (click)="cerrarFormulario()">
+
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()">
+
+
+        <div class="modal-header">
+
+          <div>
+
+            <h2>
+
+              @if (modoFormulario === 'crear') {
+                Nuevo cliente
+              }
+              @else {
+                Editar cliente
+              }
+
+            </h2>
+
+            <p>
+              Información del cliente
+            </p>
+
+          </div>
+
+
+          <button
+            type="button"
+            class="cerrar"
+            (click)="cerrarFormulario()">
+
+            ×
+
+          </button>
+
+        </div>
+
+
+        <!-- FORMULARIO -->
+
+        <div class="formulario">
+
+
+          <!-- CÉDULA -->
+
+          <div class="form-group">
+
+            <label for="cedula">
+
+              Cédula
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              id="cedula"
+              type="text"
+              maxlength="10"
+              [(ngModel)]="clienteForm.cedula"
+              placeholder="Ingrese la cédula"
+            />
+
+          </div>
+
+
+          <!-- NOMBRE -->
+
+          <div class="form-group">
+
+            <label for="nombre">
+
+              Nombre
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              id="nombre"
+              type="text"
+              [(ngModel)]="clienteForm.nombre"
+              placeholder="Ingrese nombres y apellidos"
+            />
+
+          </div>
+
+
+          <!-- DIRECCIÓN -->
+
+          <div class="form-group">
+
+            <label for="direccion">
+
+              Dirección
+
+              <span>*</span>
+
+            </label>
+
+            <input
+              id="direccion"
+              type="text"
+              [(ngModel)]="clienteForm.direccion"
+              placeholder="Ingrese la dirección"
+            />
+
+          </div>
+
+
+          <!-- TELÉFONO -->
+
+          <div class="form-group">
+
+            <label for="telefono">
+              Teléfono
+            </label>
+
+            <input
+              id="telefono"
+              type="text"
+              [(ngModel)]="clienteForm.telefono"
+              placeholder="Ingrese el teléfono"
+            />
+
+          </div>
+
+
+          <!-- CORREO -->
+
+          <div class="form-group">
+
+            <label for="correo">
+              Correo electrónico
+            </label>
+
+            <input
+              id="correo"
+              type="email"
+              [(ngModel)]="clienteForm.correo"
+              placeholder="Ingrese el correo"
+            />
+
+          </div>
+
+
+        </div>
+
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn-cancelar"
+            [disabled]="guardando"
+            (click)="cerrarFormulario()">
+
+            Cancelar
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-guardar"
+            [disabled]="guardando"
+            (click)="guardarCliente()">
+
+            @if (guardando) {
+
+              Guardando...
+
+            }
+            @else {
+
+              💾 Guardar
+
+            }
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+
+  <!-- =====================================================
+       MODAL DETALLE
+  ====================================================== -->
+
+  @if (clienteSeleccionado) {
+
+    <div
+      class="modal-fondo"
+      (click)="cerrarDetalle()">
+
+
+      <div
+        class="modal"
+        (click)="$event.stopPropagation()">
+
+
+        <div class="modal-header">
+
+          <h2>
+            Información del cliente
+          </h2>
+
+
+          <button
+            type="button"
+            class="cerrar"
+            (click)="cerrarDetalle()">
+
+            ×
+
+          </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+          <div class="detalle-avatar">
+
+            {{
+              clienteSeleccionado.nombre
+                .charAt(0)
+                .toUpperCase()
+            }}
+
+          </div>
+
+
+          <h3>
+
+            {{ clienteSeleccionado.nombre }}
+
+          </h3>
+
+
+          <div class="detalle-item">
+
+            <span>
+              ID
+            </span>
+
+            <strong>
+              {{ clienteSeleccionado.id }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Cédula
+            </span>
+
+            <strong>
+              {{ clienteSeleccionado.cedula }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Nombre
+            </span>
+
+            <strong>
+              {{ clienteSeleccionado.nombre }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Dirección
+            </span>
+
+            <strong>
+              {{ clienteSeleccionado.direccion }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Teléfono
+            </span>
+
+            <strong>
+              {{ clienteSeleccionado.telefono || '—' }}
+            </strong>
+
+          </div>
+
+
+          <div class="detalle-item">
+
+            <span>
+              Correo
+            </span>
+
+            <strong>
+              {{ clienteSeleccionado.correo || '—' }}
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+          <button
+            type="button"
+            class="btn-cerrar"
+            (click)="cerrarDetalle()">
+
+            Cerrar
+
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  }
+
+</div>
